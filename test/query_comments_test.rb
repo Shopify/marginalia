@@ -284,6 +284,15 @@ class MarginaliaTest < MiniTest::Test
     assert_equal Marginalia::Comment.escape_sql_comment('**//; DROP TABLE USERS;/*'), '; DROP TABLE USERS;'
   end
 
+  def test_add_comments_to_beginning_of_query
+    Marginalia::Comment.prepend_comment = true
+
+    ActiveRecord::Base.connection.execute "select id from posts"
+    assert_match %r{/\*application:rails\*/ select id from posts$}, @queries.first
+  ensure
+    Marginalia::Comment.prepend_comment = nil
+  end
+
   def teardown
     Marginalia.application_name = nil
     Marginalia::Comment.lines_to_ignore = nil
