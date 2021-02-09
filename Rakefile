@@ -59,7 +59,11 @@ namespace :db do
 
     desc "drop PostgreSQL database"
     task :drop do
-      sh 'psql -d postgres -U postgres -c "DROP DATABASE IF EXISTS marginalia_test"'
+      if ENV['CI']
+        sh 'psql -c "DROP DATABASE IF EXISTS marginalia_test"'
+      else
+        sh 'psql -d postgres -U postgres -c "DROP DATABASE IF EXISTS marginalia_test"'
+      end
     end
   end
 end

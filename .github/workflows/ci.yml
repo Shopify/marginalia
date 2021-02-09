@@ -29,13 +29,11 @@ jobs:
     - name: Start MySQL and create DB
       run: |
         sudo systemctl start mysql.service
-        mysql -uroot -proot -e "SET PASSWORD FOR 'root'@'localhost' = ''; create database marginalia_test;"
+        mysql -uroot -proot -e "SET PASSWORD FOR 'root'@'localhost' = ''"
     - name: Start PostgresQL and create DB
       run: |
         sudo sed -i s/md5/trust/g /etc/postgresql/*/main/pg_hba.conf
         sudo systemctl start postgresql.service
         sudo -u postgres createuser --createdb --superuser ${USER}
-        createdb marginalia_test
-        echo "POSTGRES_URL=postgres://localhost/marginalia_test" >> $GITHUB_ENV
     - name: Tests
       run: bundle exec rake db:reset test:all
